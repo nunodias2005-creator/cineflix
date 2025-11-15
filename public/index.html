@@ -1,38 +1,63 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CineFlix — Demo</title>
-  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CineFlix — Vitrine</title>
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">CineFlix</div>
-    <nav>
-      <a href="/admin/index.html">Admin</a>
+    <nav class="nav-links">
+      <a href="#">Accueil</a>
+      <a href="#">Films</a>
+      <a href="#">Séries</a>
+      <a href="#">Ma liste</a>
     </nav>
+    <div class="nav-actions">
+      <a href="/admin/index.html" class="nav-btn">Admin</a>
+    </div>
   </header>
-  <main class="container">
-    <section id="hero">
-      <h1>Bienvenue sur CineFlix</h1>
-      <p>Démo légale — vidéos libres</p>
+
+  <main>
+    <section id="hero" class="hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1 id="hero-title">CineFlix</h1>
+        <p id="hero-desc">Chargement...</p>
+        <div class="hero-buttons">
+          <button id="hero-watch" class="btn primary">▶ Regarder</button>
+          <button class="btn secondary">＋ Ma liste</button>
+        </div>
+      </div>
     </section>
 
-    <section id="catalog" class="grid"></section>
+    <section class="container">
+      <h2 class="section-title">Tendances</h2>
+      <div id="row-trending" class="row"></div>
 
-    <section id="viewer" class="modal hidden">
-      <div class="modal-inner">
-        <button id="closeViewer">✕</button>
-        <h2 id="vTitle"></h2>
-        <video id="vPlayer" class="video-js vjs-fluid" controls preload="auto"></video>
-        <p id="vDesc"></p>
-      </div>
+      <h2 class="section-title">Nouveautés</h2>
+      <div id="row-new" class="row"></div>
+
+      <h2 class="section-title">Recommandés</h2>
+      <div id="row-reco" class="row"></div>
     </section>
   </main>
 
-  <footer class="footer">CineFlix — demo. Respecte les licences.</footer>
+  <section id="viewer" class="modal hidden">
+    <div class="modal-inner">
+      <button id="closeViewer" class="close-btn">✕</button>
+      <h2 id="vTitle"></h2>
+      <video id="vPlayer" class="video-js vjs-fluid" controls preload="auto"></video>
+      <p id="vDesc"></p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <small>CineFlix — Site vitrine démo. Aucune œuvre protégée n’est diffusée.</small>
+  </footer>
 
   <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
   <script src="/app.js"></script>
