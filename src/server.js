@@ -37,14 +37,72 @@ app.get('*', (req, res) => {
 });
 
 // Connexion Mongo + démarrage
+// Connect Mongo and start
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/cineflix';
+import Movie from './models/Movie.js';
 
-mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
+async function seedIfEmpty() {
+  const count = await Movie.countDocuments();
+  if (count > 0) return;
+
+  console.log('No movies found, seeding demo data...');
+
+  const demoMovies = [
+    {
+      title: 'La Nuit Rouge',
+      description: "Thriller fictif : une ville plongée dans le noir, un secret qui refait surface.",
+      year: 2023,
+      poster: '/assets/nuit-rouge.jpg',
+      sources: [
+        {
+          quality: 'HD',
+          type: 'video/mp4',
+          src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+        }
+      ]
+    },
+    {
+      title: 'Eclipse Urbaine',
+      description: "Film de science-fiction fictif, dans une mégalopole futuriste.",
+      year: 2025,
+      poster: '/assets/eclipse-urbaine.jpg',
+      sources: [
+        {
+          quality: 'HD',
+          type: 'video/mp4',
+          src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
+        }
+      ]
+    },
+    {
+      title: 'Vertige',
+      description: "Drame psychologique autour d\'un producteur dépassé par son propre succès.",
+      year: 2022,
+      poster: '/assets/vertige.jpg',
+      sources: [
+        {
+          quality: 'HD',
+          type: 'video/mp4',
+          src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+        }
+      ]
+    }
+  ];
+
+  await Movie.insertMany(demoMovies);
+  console.log('Demo movies seeded ✔️');
+}
+
+mongoose
+  .connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(async () => {
     console.log('MongoDB connected');
+    await seedIfEmpty();
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
-  .catch(err => {
+  .catch((err) => {
     console.error('Mongo connection error:', err);
-    app.listen(PORT, () => console.log(`Server running on port ${PORT} (no DB)`));
+    app.listen(PORT, () =>
+      console.log(`Server running on port ${PORT} (no DB, demo only)`)
+    );
   });
