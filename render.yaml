@@ -5,6 +5,7 @@ services:
     plan: free
     repo: <YOUR_GIT_REPO_URL>
     branch: main
+    rootDir: .
     buildCommand: npm install
     startCommand: node src/server.js
     envVars:
