@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/cineflix
+      - JWT_SECRET=change_this
+    depends_on:
+      - mongo
+    volumes:
+      - ./uploads:/usr/src/app/uploads
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongodata:/data/db
+volumes:
+  mongodata:
