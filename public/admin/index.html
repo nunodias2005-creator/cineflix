@@ -16,6 +16,13 @@
 
     <section id="adminSection" class="hidden">
       <h3>Ajouter un film</h3>
+      <!-- 🚀 SECTION BOT AUTO-ADD -->
+  <section id="autoAddSection">
+    <h3>Ajout automatique (TMDB + trailer YouTube)</h3>
+    <input id="autoTitle" placeholder="Titre du film" />
+    <button id="autoAddBtn">Ajouter automatiquement</button>
+    <pre id="autoAddResult"></pre>
+  </section>
       <form id="uploadForm">
         <input name="title" placeholder="Titre" required /><br/>
         <input name="year" placeholder="Année" /><br/>
@@ -30,46 +37,76 @@
     </section>
   </main>
 
-  <script>
-    let token = null;
-    document.getElementById('login').onclick = async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const res = await fetch('/api/auth/login', {
-        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,password})
-      });
-      const j = await res.json();
-      if (j.token) {
-        token = j.token;
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('adminSection').classList.remove('hidden');
-      } else {
-        alert('Erreur de connexion');
-      }
-    };
+ <script>
+  let token = null;
+  document.getElementById('login').onclick = async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const j = await res.json();
+    if (j.token) {
+      token = j.token;
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('adminSection').classList.remove('hidden');
+    } else {
+      alert('Erreur de connexion');
+    }
+  };
 
-    document.getElementById('uploadForm').onsubmit = async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const fd = new FormData(form);
-      const res = await fetch('/api/admin/movie', {
-        method:'POST',
-        headers: { 'Authorization': 'Bearer ' + token },
-        body: fd
-      });
-      const j = await res.json();
-      if (j.ok) {
-        alert('Film ajouté');
-      } else {
-        alert('Erreur');
-      }
-    };
+  document.getElementById('uploadForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const fd = new FormData(form);
+    const res = await fetch('/api/admin/movie', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token },
+      body: fd
+    });
+    const j = await res.json();
+    if (j.ok) {
+      alert('Film ajouté');
+    } else {
+      alert('Erreur');
+    }
+  };
 
-    document.getElementById('listUsers').onclick = async () => {
-      const res = await fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + token } });
-      const j = await res.json();
-      document.getElementById('usersOut').innerText = JSON.stringify(j, null, 2);
-    };
-  </script>
-</body>
-</html>
+  document.getElementById('listUsers').onclick = async () => {
+    const res = await fetch('/api/admin/users', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const j = await res.json();
+    document.getElementById('usersOut').innerText = JSON.stringify(
+      j,
+      null,
+      2
+    );
+  };
+
+  // 👉 BOT AUTO-ADD AVEC TMDB
+  const autoBtn = document.getElementById('autoAddBtn');
+  const autoTitleInput = document.getElementById('autoTitle');
+  const autoResult = document.getElementById('autoAddResult');
+
+  autoBtn.onclick = async () => {
+    const title = autoTitleInput.value.trim();
+    if (!title) {
+      alert('Entre un titre');
+      return;
+    }
+    autoResult.textContent = 'Recherche TMDB...';
+    const res = await fetch('/api/admin/auto-add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token
+      },
+      body: JSON.stringify({ title })
+    });
+    const j = await res.json();
+    autoResult.textContent = JSON.stringify(j, null, 2);
+  };
+</script>
