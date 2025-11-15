@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import fetch from 'node-fetch';
 import Movie from '../models/Movie.js';
 import User from '../models/User.js';
 import requireAuth from '../middleware/auth.js';
